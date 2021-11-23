@@ -3,12 +3,28 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom'
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider
+} from "@apollo/client";
+import { createUploadLink } from "apollo-upload-client";
+
+const client = new ApolloClient({
+  // uri: 'https://daily-uz.herokuapp.com/',
+  // link: createUploadLink(),    
+  uri: 'http://localhost:4000/',
+
+  cache: new InMemoryCache()
+} );
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App/>
-    </BrowserRouter>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <App/>
+      </BrowserRouter>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
