@@ -11,9 +11,9 @@ import {
 import { createUploadLink } from "apollo-upload-client";
 
 const client = new ApolloClient({
-  // uri: 'https://daily-uz.herokuapp.com/',
-  // link: createUploadLink(),    
-  uri: 'http://localhost:4000/',
+  uri: 'https://daily-uz.herokuapp.com/',
+  link: createUploadLink({uri:'https://daily-uz.herokuapp.com/'}),    
+  // uri: 'http://localhost:4000/',
 
   cache: new InMemoryCache()
 } );
