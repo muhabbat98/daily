@@ -1,65 +1,57 @@
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useMutation } from '@apollo/client';
+import {DriveFolderUpload} from '@mui/icons-material';
+
 import {SEND_IMAGE} from "../../Graphql/Mutation"
 import {useDropzone} from 'react-dropzone'
-function ImageUpload ()
+import {  Loader } from "../../style";
+import ErrorItem from "../../Components/MainAdd/Errors";
+function ImageUpload ({imageId})
 {
-    // let imageUpload
     const [image, setImage] = useState()
+    
     const [ sendFile, { data, loading, error } ] = useMutation( SEND_IMAGE, {
         variables: {
             file: image
         }
     } )
-    
+    const [errorStatus, setErrorStatus] =useState(false)
+    useEffect( () =>
+    {
+       
+        if ( data && data.imageUpload ){
+            imageId(parseInt(data.imageUpload.id))
+        }
+      
+    }, [ data,imageId ] )
+        
+    useEffect( () =>{
+        if(error)setErrorStatus(true)
+    },[error])
     const onDrop = useCallback(acceptedFiles => {
-    // Do something with the files
-        for ( let file of acceptedFiles ){
-            let binFile
-            const reader = new FileReader()
-            // reader.onabort = () => console.log('file reading was aborted')
-            // reader.onerror = () => console.log('file reading has failed')
-            // reader.onload = () => {
-            // // Do whatever you want with the file contents
-            //     const binaryStr = reader.result
-            //     binFile = binaryStr
-            //     console.log(binaryStr)
-            // }
-            
-            console.log( "File", file )
+    
+        for ( let file of acceptedFiles )
+        {
             setImage(file)
             sendFile()
         }
-        // console.log(acceptedFiles)
-    }, [] )
-//     function getBase64(file) {
-//         const reader = new FileReader();
-//         reader.readAsDataURL(file);
-//         reader.onload = function () {
-//             console.log( reader.result );
-//             return reader.result
-//         };
-//         reader.onerror = function (error) {
-//             console.log('Error: ', error);
-//         };
-// }
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
-
-    console.log(error)
-    useEffect( () =>
-    {
-        console.log("data from backend",data)
-    },[data])
-
-    return (
+    }, [sendFile] )
+    const {getRootProps, getInputProps} = useDropzone({onDrop, accept: 'image/*',maxSize:1000000})
+ 
+    return (<>
+        {
+            loading ? <Loader/>:<></>
+        }
         <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            {
-                isDragActive ?
-                <p>Drop the files here ...</p> :
-                <p>Drag 'n' drop some files here, or click to select files</p>
-            }
+                <input {...getInputProps()} />
+                {
+                <p style={ { display: 'flex', alignItems: "center" } }>image upload <DriveFolderUpload style={ {marginLeft:"16px"} }/></p>
+                }
         </div>
+        {
+            error ? <ErrorItem errorStatus={ {errorStatus, setErrorStatus, message:error.message} } /> :<></>
+        }
+        </>
     )
 }
 export default ImageUpload

@@ -6,16 +6,40 @@ import {BrowserRouter} from 'react-router-dom'
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloProvider
+  ApolloProvider,
+  from
 } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
+import { setContext } from '@apollo/client/link/context';
+import { onError } from "@apollo/client/link/error";
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiYmlnT05vdCIsImlhdCI6MTYzODQ0NDE2OH0.yhhGChFsarF71KOdGsHPURL6DXO2INa1c1LXpWiJ8BU";
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      token: token ? `${token}` : "",
+    }
+  }
+} );
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.forEach(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+      ),
+    );
 
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
+const httpLink = createUploadLink( { uri: 'https://daily-uz.herokuapp.com/app',credentials: 'same-origin' } )
 const client = new ApolloClient({
-  uri: 'https://daily-uz.herokuapp.com/',
-  link: createUploadLink({uri:'https://daily-uz.herokuapp.com/'}),    
-  // uri: 'http://localhost:4000/',
+  uri: 'https://daily-uz.herokuapp.com/app',
 
-  cache: new InMemoryCache()
+  link:authLink.concat(from([errorLink, httpLink])) ,
+  cache: new InMemoryCache(),
+
 } );
 
 ReactDOM.render(
