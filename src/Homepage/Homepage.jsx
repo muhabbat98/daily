@@ -1,11 +1,9 @@
-import { Link, Outlet } from "react-router-dom";
+
+import Expense from './Expense'
 
 const Homepage = () =>{
     return <>
-        <nav>
-            <Link to="/accounts">Accounts</Link>
-        </nav>
-        <Outlet/>
+         <Expense />
     </>
 };
 

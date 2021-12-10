@@ -1,15 +1,19 @@
 import { useMutation } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import ErrorItem from "../../../Components/MainAdd/Errors";
+import ModalWindow from "../../../Components/MainAdd/Modal";
 import { CREATE_EXPENSE_ITEM } from "../../../Graphql/Mutation";
-import { Modal, Form, Submit, Loader } from "../../../style";
-import { Esc, ExpenseInput, Expenselabel, ModalHeader, Window, InputItem } from "./style";
+import { EXPENSES } from "../../../Graphql/Query";
+import {  Form, Submit } from "../../../style";
+import { ExpenseInput, Expenselabel, ModalHeader, InputItem } from "./style";
 export default function ExpenseChild ( { modalProps, parentId } ){
     
     const [ errorStatus, setErrorStatus ] = useState( false )
     const [ alert, setAlert ] = useState( '' )
     
-    const [ sendExpense, { data, loading, error } ] = useMutation( CREATE_EXPENSE_ITEM )
+    const [ sendExpense, { data, loading, error } ] = useMutation( CREATE_EXPENSE_ITEM, {
+        refetchQueries: [ EXPENSES, 'Expenses']
+    } )
 
     const title = useRef( '' )
     const cost = useRef( '' )
@@ -48,10 +52,7 @@ export default function ExpenseChild ( { modalProps, parentId } ){
         return <ErrorItem errorStatus={ { errorStatus: !!alert, setErrorStatus: setAlert, message: alert } } />;
     }
     
-    return <Modal>        
-        {
-            loading ? <Loader/>: <Window>
-            <Esc onClick={ () => modalProps( false ) }>X</Esc>
+    return <ModalWindow modalProps={modalProps} loading={loading}>
             <ModalHeader>Add expense</ModalHeader>
             <Form onSubmit={e=>submitHandler(e)}>
                 
@@ -69,7 +70,6 @@ export default function ExpenseChild ( { modalProps, parentId } ){
                 </InputItem>
                 <Submit>send</Submit>
             </Form>
-        </Window>
-        }
-    </Modal>
+    </ModalWindow>
 }
+

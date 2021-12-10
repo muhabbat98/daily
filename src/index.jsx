@@ -36,9 +36,9 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 const httpLink = createUploadLink( { uri: 'https://daily-uz.herokuapp.com/app',credentials: 'same-origin' } )
 const client = new ApolloClient({
   uri: 'https://daily-uz.herokuapp.com/app',
-
-  link:authLink.concat(from([errorLink, httpLink])) ,
   cache: new InMemoryCache(),
+  link:authLink.concat(from([errorLink, httpLink])) ,
+ 
 
 } );
 

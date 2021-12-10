@@ -5,7 +5,7 @@ import {EXPENSES} from '../Graphql/Query'
 
 import ImageUpload from "./ImageUpload";
 import Header from "./Header";
-import { Container } from "./Header/style";
+import { Container } from "../Homepage/Navbar/style";
 import { ExpenseInput, SmallContainer, ExpenseSend, SmallHeader } from "./ImageUpload/style";
 import { Expenses } from "./Expenses";
 import { Loader } from "../style";
