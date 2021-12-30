@@ -1,8 +1,18 @@
 import { NavList, NavListItem,Navbar, Container } from "./style";
 import { Link, Outlet } from "react-router-dom";
-export default function NavbarList ()
-{
-    return (<>
+import {useAuth} from '../../store/auth-contex'
+import AddUser from "../../Pages/UserProfile/AddUser";
+import ProofComponent from "../../Components/ProfComponent";
+import { useState } from "react";
+export default function NavbarList (){
+   
+    const [ state ] = useAuth( true )
+    const [modal, setModal] = useState(false)
+    const loginHandler = () =>{
+        setModal(true)
+    }
+
+    return ( <>
         <Navbar>
             <Container>
                 <NavList>                    
@@ -12,8 +22,11 @@ export default function NavbarList ()
                     <NavListItem>
                         <Link to="/dashboard">Dashboard</Link>
                     </NavListItem>      
-                    <NavListItem>
-                        <Link to="/user">Log In</Link>
+                    <NavListItem>                        
+                        <Link to="/user" onClick={ loginHandler }>{ !state.token ? "Log In" : 'Log out' }</Link>
+                        {
+                            modal? !state.token? <AddUser modalProps={setModal}/>: <ProofComponent modalProps={setModal}/>:<></>
+                        }
                     </NavListItem> 
                 </NavList>                
             </Container>

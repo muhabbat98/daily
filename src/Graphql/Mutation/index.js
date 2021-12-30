@@ -11,9 +11,15 @@ export const SEND_IMAGE = gql`
 export const SEND_EXPENSE = gql`
   mutation AddExpense($name:String, $imageId:Int){
     addExpense(name:$name, image:$imageId){
-      image
-      name
-      id
+        id
+        name
+        image
+        items{
+          id
+          item
+          cost 
+          date
+        }
     }
   }
 `;
@@ -31,5 +37,17 @@ export const CREATE_EXPENSE_ITEM = gql`
 export const ADD_USER = gql`
   mutation AddUser($username:String, $password:String){
     addUser(username:$username, password:$password)
+  }
+`
+export const DELETE_EXPENSE = gql`
+  mutation DeleteExpense($id:Int){
+    deleteExpense(expenseId:$id){
+      id
+    }
+  }
+`
+export const IS_USER = gql`
+  mutation IsUser ($username:String $password:String){
+    isUser(username:$username, password:$password)
   }
 `

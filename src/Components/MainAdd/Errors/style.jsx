@@ -8,6 +8,7 @@ export const ErrorComponent = styled.div`
         right: 0;
         bottom:0;
         display: ${(props)=> props.isActive ?"block":"none"};
+        
     `
 export const ErrorMessage = styled.div` 
         padding: 16px;
@@ -22,7 +23,7 @@ export const ErrorMessage = styled.div`
         position: absolute;
         top: 42px;
         right: 42px;
-        z-index:5;
+        z-index:25;
 `
 export  const EscButton = styled.button`
         background-color: transparent;

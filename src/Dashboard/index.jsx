@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from '@apollo/client'
 import { SEND_EXPENSE } from '../Graphql/Mutation'
-import {EXPENSES} from '../Graphql/Query'
 
 import ImageUpload from "./ImageUpload";
 import Header from "./Header";
@@ -15,11 +14,17 @@ function Dashboard (){
     const [ expense, setExpense ] = useState('')
     const expenseName = useRef()
     const [errorStatus, setErrorStatus] = useState(false)
-    const [ sendExpense, {  loading, error } ] = useMutation( SEND_EXPENSE, {
-        refetchQueries: [
-            EXPENSES,
-            "Expenses"
-        ]
+    const [ sendExpense, { loading, error } ] = useMutation( SEND_EXPENSE, {
+        update: ( cache, mutResult ) =>
+        {
+            let addedExpense = cache.identify( mutResult.data?.addExpense )
+        
+            cache.modify( {
+                fields: {
+                    expenses: ( expenses ) =>[ ...expenses, {__ref:addedExpense} ]
+                },
+            })
+        }
     } )
     
     const expenseHandler = () =>{
@@ -41,7 +46,7 @@ function Dashboard (){
         <Container>
             <SmallContainer>
                 <SmallHeader>Expense</SmallHeader>
-                <ExpenseInput ref={ expenseName}/>
+                <ExpenseInput ref={expenseName}/>
                 <ImageUpload imageId={setExpense} />
                 <ExpenseSend onClick={ expenseHandler }>Send</ExpenseSend>
                 <Expenses/>

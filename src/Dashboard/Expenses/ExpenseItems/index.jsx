@@ -6,10 +6,11 @@ export default function ExpenseItem ( { modalProps, items } ){
 
     return (
         <ModalWindow modalProps={modalProps} loading={false}>
-              <ModalHeader>Expenses</ModalHeader>
-                    {
-                        items  ? items.map(u=><ExpensesList key={u.id}>
-                            <ExpensesListItem>
+            <ModalHeader>Expenses</ModalHeader>
+            <ExpensesList >
+                {
+                    items ? items.map( u =>
+                            <ExpensesListItem key={u.id}>
                                 <SmallExpensePart>
                                     {u.item}
                                 </SmallExpensePart>
@@ -21,9 +22,9 @@ export default function ExpenseItem ( { modalProps, items } ){
                                         {u.date}
                                     </div>
                                 </SmallExpensePart>
-                            </ExpensesListItem>
-                        </ExpensesList>):<></>
-                    }
+                            </ExpensesListItem>):<></>
+                }
+                </ExpensesList>
         </ModalWindow>
     )
 }

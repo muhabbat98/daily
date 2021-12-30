@@ -14,11 +14,10 @@ function ImageUpload ({imageId})
         variables: {
             file: image
         }
-    } )
+    })
     const [errorStatus, setErrorStatus] =useState(false)
     useEffect( () =>
     {
-       
         if ( data && data.imageUpload ){
             imageId(parseInt(data.imageUpload.id))
         }

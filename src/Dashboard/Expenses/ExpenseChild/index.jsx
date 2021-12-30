@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import ErrorItem from "../../../Components/MainAdd/Errors";
 import ModalWindow from "../../../Components/MainAdd/Modal";
 import { CREATE_EXPENSE_ITEM } from "../../../Graphql/Mutation";
-import { EXPENSES } from "../../../Graphql/Query";
 import {  Form, Submit } from "../../../style";
 import { ExpenseInput, Expenselabel, ModalHeader, InputItem } from "./style";
 export default function ExpenseChild ( { modalProps, parentId } ){
@@ -12,8 +11,16 @@ export default function ExpenseChild ( { modalProps, parentId } ){
     const [ alert, setAlert ] = useState( '' )
     
     const [ sendExpense, { data, loading, error } ] = useMutation( CREATE_EXPENSE_ITEM, {
-        refetchQueries: [ EXPENSES, 'Expenses']
-    } )
+        update: ( cache, newItem ) =>
+        {
+            cache.modify( {
+                id:'Expense:'+parentId,
+                fields: {
+                    items: ( exData ) => ([...exData,{__ref:cache.identify(newItem.data.addExpenseItem)} ] )                   
+                }
+            })
+        }
+    })
 
     const title = useRef( '' )
     const cost = useRef( '' )
@@ -33,14 +40,21 @@ export default function ExpenseChild ( { modalProps, parentId } ){
     
     const submitHandler = e =>{
         e.preventDefault()
-        sendExpense( {
-            variables: {
-                expenseId:parseInt(parentId),
-                item: title.current.value,
-                cost: parseInt(cost.current.value),
-                date: new Date(date.current.value)
-            }
-        } )
+        if (title.current.value&&cost.current.value&&date.current.value)
+        {
+            sendExpense( {
+                variables: {
+                    expenseId:parseInt(parentId),
+                    item: title.current.value,
+                    cost: parseInt(cost.current.value),
+                    date: new Date(date.current.value)
+                }
+            } )
+        }
+        else
+        {
+            return <ErrorItem errorStatus={{errorStatus:!title.current.value&&cost.current.value&&date.current.value, setErrorStatus:(val)=>this.errorStatus=val}}/>
+        }
     }
 
     if ( errorStatus ) <ErrorItem errorStatus={ { errorStatus, setErrorStatus, message: error.message } } />

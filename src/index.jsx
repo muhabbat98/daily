@@ -12,10 +12,12 @@ import {
 import { createUploadLink } from "apollo-upload-client";
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
+import { AuthProvider} from './store/auth-contex';
 const authLink = setContext((_, { headers }) => {
-  // get the authentication token from local storage if it exists
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiYmlnT05vdCIsImlhdCI6MTYzODQ0NDE2OH0.yhhGChFsarF71KOdGsHPURL6DXO2INa1c1LXpWiJ8BU";
-  // return the headers to the context so httpLink can read them
+
+  // const [state ]= useAuth(true)
+  // const token = state.token;
+  const token = window.localStorage.getItem('token')
   return {
     headers: {
       ...headers,
@@ -46,14 +48,13 @@ ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <BrowserRouter>
-        <App/>
+        <AuthProvider>
+          <App/>
+        </AuthProvider>
       </BrowserRouter>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

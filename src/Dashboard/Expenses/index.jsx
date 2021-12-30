@@ -16,7 +16,7 @@ export function Expenses () {
     {
        error ? setErrorStatus( true ):setErrorStatus( false )
         
-    },[error])
+    }, [ error ] )
     return <>
         <ExpensesList>
             {

@@ -23,7 +23,6 @@ export const NavListItem = styled.li`
     }
 `
 export const Navbar = styled.nav`
-    width: 100%;
     min-height: 3rem;
     background-color: #4d0bc950;
     display: flex;

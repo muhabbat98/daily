@@ -1,4 +1,4 @@
 
 export default function Header () {
-    return <>Header</>
+    return <div>Header</div>
 } 
